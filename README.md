@@ -10,8 +10,8 @@ A template for building OpenWrt with GitHub Actions
 ## My default config
 项目release的固件除openwrt默认包含的组件外还含有以下内容：ipv6-helper、luci-app-filetransfer、BORE CPU Scheduler、SmartDNS、OPENCLASH（内置mihomo smart alpha内核）、~~DiskMan~~、TurboACC（支持firewall4）、BBR3补丁、taskplan（任务计划）、~~my-script（一个启动脚本，为了切换qdisc算法）~~、luci-app-temp-status（温度）、luci-theme-argon（主题）、重启插件、关机插件。
 
-当前rax3000m固件使用来自https://github.com/chasey-dev/immortalwrt-mt798x-rebase 的源码，
-使用闭源驱动，支持MTK硬件NAT和硬件加速。
+~~当前rax3000m固件使用来自https://github.com/chasey-dev/immortalwrt-mt798x-rebase 的源码，使用闭源驱动，支持MTK硬件NAT和硬件加速。~~
+用回immortalwrt了，闭源驱动不知道为什么游戏延迟比开源驱动高一倍，而且这个分支的源码不支持开高功率，5G只能开到22db,immortalwrt可以开到24db。
 
 **turboacc仅开启BBR算法可用，请勿打开其中的硬件加速选项，mtk硬件加速已经默认开启，与turboacc中的硬件加速以及防火墙中的路由/NAT 卸载功能冲突，打开会无限重启。**
 

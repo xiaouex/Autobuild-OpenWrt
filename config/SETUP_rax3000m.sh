@@ -15,8 +15,8 @@ set -euo pipefail
 # 您可以从 GitHub Actions 传入环境变量，或者在此处定义全局变量
 WORK_DIR="/workdir"
 REPO_DIR="$WORK_DIR/openwrt"
-readonly REPO_URL="https://github.com/chasey-dev/immortalwrt-mt798x-rebase"
-readonly REPO_BRANCH="25.12"
+readonly REPO_URL="https://github.com/immortalwrt/immortalwrt"
+readonly REPO_BRANCH="master"
 # ==========================================
 # 分函数定义 (Sub-functions)
 # ==========================================
@@ -56,9 +56,9 @@ function task_step_3() {
     cd $GITHUB_WORKSPACE/openwrt
     #git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
 
-    rm -rf feeds/smpackage/luci-app-smartdns
-    git clone --depth 1 https://github.com/pymumu/luci-app-smartdns feeds/smpackage/luci-app-smartdns
-    sed -i 's/DEPENDS:=+i386:libatomic +libopenssl/DEPENDS:=+i386:libatomic +libopenssl +zlib/g' feeds/smpackage/smartdns/Makefile
+    #rm -rf feeds/smpackage/luci-app-smartdns
+    #git clone --depth 1 https://github.com/pymumu/luci-app-smartdns feeds/smpackage/luci-app-smartdns
+    #sed -i 's/DEPENDS:=+i386:libatomic +libopenssl/DEPENDS:=+i386:libatomic +libopenssl +zlib/g' feeds/smpackage/smartdns/Makefile
     #git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer package/xiaouex/luci-app-filetransfer
     #rm -rf feeds/smpackage/v2ray-geodata
     #git clone --depth 1 https://github.com/sbwml/v2ray-geodata feeds/smpackage/v2ray-geodata
@@ -115,9 +115,12 @@ function task_step_5() {
     
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/linux-6.12-bore/*.patch target/linux/generic/hack-6.12
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.12
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/linux-6.12-bore/*.patch target/linux/generic/hack-6.18
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.18
     rm -rf $GITHUB_WORKSPACE/config/files/BORE
+
+    cp $GITHUB_WORKSPACE/config/files/601-tcp_bbr-v3-update-TCP-bbr-congestion-control-module-.patch openwrt/target/linux/generic/pending-6.18
+
     
     echo "✔ [步骤 5] 合入自定义补丁 执行完毕。"
 }

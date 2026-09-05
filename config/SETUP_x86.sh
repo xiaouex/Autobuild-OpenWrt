@@ -70,10 +70,11 @@ function task_step_3() {
 
 # 分函数 4：添加mihomo smart内核
 function task_step_4() {
-    echo "正在执行 [步骤 4]: 添加mihomo smart内核..."
+      echo "正在执行 [步骤 4]: 添加mihomo smart内核..."
+    cd $GITHUB_WORKSPACE
+    
     cd $GITHUB_WORKSPACE
     echo -e "预置Clash内核"
-
     mkdir -p $GITHUB_WORKSPACE/openwrt/feeds/smpackage/luci-app-openclash/root/etc/openclash/core
     core_path="$GITHUB_WORKSPACE/openwrt/feeds/smpackage/luci-app-openclash/root/etc/openclash/core"
     geo_path="$GITHUB_WORKSPACE/openwrt/feeds/smpackage/luci-app-openclash/root/etc/openclash"
@@ -81,7 +82,7 @@ function task_step_4() {
     curl -L -o $GITHUB_WORKSPACE/clash-linux-amd64-v2.tar.gz \
     https://github.com/vernesong/OpenClash/raw/core/dev/smart/clash-linux-amd64-v2.tar.gz
 
-    tar -zxvf clash-linux-amd64-v2.tar.gz -O > "$core_path/clash_meta"
+    tar -zxvf clash-linux-arm64.tar.gz -O > "$core_path/clash_meta"
 
     wget -qO- https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat > $geo_path/GeoIP.dat
     wget -qO- https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat > $geo_path/GeoSite.dat

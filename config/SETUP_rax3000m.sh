@@ -95,23 +95,6 @@ function task_step_4() {
 function task_step_5() {
     echo "正在执行 [步骤 5]: 合入自定义补丁..."
     cd $GITHUB_WORKSPACE/openwrt
-    #Add BBR V3
-
-    # 配置 Git 用户信息（GitHub Actions 中必需）
-    git config --global user.name "xiaouex"
-    git config --global user.email "xiaouex@live.com"
-    # 添加上游仓库（fork 源）
-    UPSTREAM_URL="https://github.com/nasbdh9/openwrt"
-    UPSTREAM_REMOTE="upstream-temp"
-    # 添加临时远程
-    git remote add "$UPSTREAM_REMOTE" "$UPSTREAM_URL"
-    # 获取上游提交
-    git fetch "$UPSTREAM_REMOTE" 94d8192c17b99ff5bc3975c00e2ed7079f6e5b89
-    # Cherry-pick 两个 commit
-    git cherry-pick 94d8192c17b99ff5bc3975c00e2ed7079f6e5b89
-    # 删除临时远程
-    git remote remove "$UPSTREAM_REMOTE"
-
     
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
@@ -141,12 +124,12 @@ function task_step_6() {
     sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
     sed -i 's/ImmortalWrt/MineRouter/g' package/base-files/files/bin/config_generate
 
-    echo 'CONFIG_SCHED_BORE=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_SCHED_BORE=y' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.18
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 

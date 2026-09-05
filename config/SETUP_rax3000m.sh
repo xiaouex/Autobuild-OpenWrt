@@ -54,8 +54,9 @@ function task_step_3() {
 
     echo "正在执行 [步骤 3]: 添加额外软件包，并执行 feeds install和feeds install..."
     cd $GITHUB_WORKSPACE/openwrt
-    #git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
-
+    git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
+    curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe   
+    
     #rm -rf feeds/smpackage/luci-app-smartdns
     #git clone --depth 1 https://github.com/pymumu/luci-app-smartdns feeds/smpackage/luci-app-smartdns
     #sed -i 's/DEPENDS:=+i386:libatomic +libopenssl/DEPENDS:=+i386:libatomic +libopenssl +zlib/g' feeds/smpackage/smartdns/Makefile

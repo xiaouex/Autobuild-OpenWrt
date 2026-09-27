@@ -141,7 +141,7 @@ jobs:
         keep_minimum_runs: 2
         
     - name: 删除过时release和标签
-      uses: jay2610/delete-older-releases@1.0.0
+      uses: jay2610/delete-older-releases@1.4.0
       with:
         repo: xiaouex/Autobuild-OpenWrt
         keep_latest: 5

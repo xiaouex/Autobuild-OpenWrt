@@ -94,6 +94,7 @@ function task_step_4() {
 # 分函数 5：合入自定义补丁
 function task_step_5() {
     echo "正在执行 [步骤 5]: 合入自定义补丁..."
+    cd $GITHUB_WORKSPACE/openwrt
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
     cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.18*.patch target/linux/generic/hack-6.18

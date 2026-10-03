@@ -95,13 +95,14 @@ function task_step_4() {
 function task_step_5() {
     echo "正在执行 [步骤 5]: 合入自定义补丁..."
     cd $GITHUB_WORKSPACE/openwrt
+    
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
     cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.18*.patch target/linux/generic/hack-6.18
     cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.18
     rm -rf $GITHUB_WORKSPACE/config/files/BORE
-    #Add bbr3
-    cp $GITHUB_WORKSPACE/config/files/601-tcp_bbr-v3-update-TCP-bbr-congestion-control-module-.patch openwrt/target/linux/generic/pending-6.18
+
+    cp $GITHUB_WORKSPACE/config/files/601-tcp_bbr-v3-update-TCP-bbr-congestion-control-module-.patch target/linux/generic/pending-6.18    
     echo "✔ [步骤 5] 合入自定义补丁 执行完毕。"
 }
 

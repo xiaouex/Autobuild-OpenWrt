@@ -108,6 +108,7 @@ function task_step_5() {
 
 #分函数 6：编译前最终配置调整
 function task_step_6() {
+    cd $GITHUB_WORKSPACE
     echo "正在执行 [步骤 6]: 编译前最终配置调整..."
     mv config/x86/.config openwrt/.config
     cd $GITHUB_WORKSPACE/openwrt

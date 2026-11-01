@@ -99,11 +99,13 @@ function task_step_5() {
     
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.18*.patch target/linux/generic/hack-6.18
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.18
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.12*.patch target/linux/generic/hack-6.12
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.12
     rm -rf $GITHUB_WORKSPACE/config/files/BORE
-
-    cp $GITHUB_WORKSPACE/config/files/601-tcp_bbr-v3-update-TCP-bbr-congestion-control-module-.patch target/linux/generic/pending-6.18
+    #Add BBRV3 
+    git remote add upstream https://github.com/rockdrilla/fork.openwrt
+    git fetch upstream
+    git cherry-pick -x a7ffdcae8e96eb6dece70622de121f97ff55bfab e2fa1c32f89ec0bfb726ceb96294b6b957b32d67 b0d225dbd9119fd094dbaa76160e9ce520126927
 
     
     echo "✔ [步骤 5] 合入自定义补丁 执行完毕。"
@@ -116,21 +118,29 @@ function task_step_6() {
     cd $GITHUB_WORKSPACE
     mv config/rax3000m/.config openwrt/.config
     cd $GITHUB_WORKSPACE/openwrt
+    curl -sSL https://raw.githubusercontent.com/mufeng05/openwrt-sonic-fullcone/master/add_sonic_fullcone.sh | bash
     #修改默认主题
     sed -i 's/luci-theme-bootstrap/luci-theme-material3/g' feeds/luci/modules/luci-base/root/etc/config/luci
-    curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+    #curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
     #修正连接数（by ベ七秒鱼ベ）
     sed -i '/will not survive a reimage/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
     
     sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
     sed -i 's/ImmortalWrt/MineRouter/g' package/base-files/files/bin/config_generate
 
-    echo 'CONFIG_SCHED_BORE=y' >> target/linux/mediatek/filogic/config-6.18
-    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/mediatek/filogic/config-6.18
-    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/mediatek/filogic/config-6.18
-    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/mediatek/filogic/config-6.18
-    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.18
-    echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.18
+    echo 'CONFIG_SCHED_BORE=y' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.12
+    echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.12
+    
+    sed -i \
+        -e 's/^# CONFIG_DEFAULT_FQ_PIE is not set/CONFIG_DEFAULT_FQ_PIE=y/' \
+        -e 's/^CONFIG_DEFAULT_NET_SCH=.*/CONFIG_DEFAULT_NET_SCH="fq_pie"/' \
+        -e 's/^CONFIG_DEFAULT_TCP_CONG=.*/CONFIG_DEFAULT_TCP_CONG="bbr"/' \
+    target/linux/generic/config-6.12
+    
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 

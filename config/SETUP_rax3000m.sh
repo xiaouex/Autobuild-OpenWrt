@@ -103,6 +103,8 @@ function task_step_5() {
     cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.12
     rm -rf $GITHUB_WORKSPACE/config/files/BORE
     #Add BBRV3 
+    git config --global user.email "xiaouex@live.com"
+    git config --global user.name "xiaouex"
     git remote add upstream https://github.com/rockdrilla/fork.openwrt
     git fetch upstream
     git cherry-pick -x a7ffdcae8e96eb6dece70622de121f97ff55bfab e2fa1c32f89ec0bfb726ceb96294b6b957b32d67 b0d225dbd9119fd094dbaa76160e9ce520126927

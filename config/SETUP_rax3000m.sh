@@ -139,6 +139,7 @@ function task_step_6() {
     
     sed -i \
         -e 's/^# CONFIG_DEFAULT_FQ_PIE is not set/CONFIG_DEFAULT_FQ_PIE=y/' \
+        -e 's/^# CONFIG_DEFAULT_FQ is not set/CONFIG_DEFAULT_FQ=y/' \
         -e 's/^CONFIG_DEFAULT_NET_SCH=.*/CONFIG_DEFAULT_NET_SCH="fq_pie"/' \
         -e 's/^CONFIG_DEFAULT_TCP_CONG=.*/CONFIG_DEFAULT_TCP_CONG="bbr"/' \
     target/linux/generic/config-6.12

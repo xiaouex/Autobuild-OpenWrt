@@ -143,6 +143,11 @@ function task_step_6() {
         -e 's/^CONFIG_DEFAULT_TCP_CONG=.*/CONFIG_DEFAULT_TCP_CONG="bbr"/' \
     target/linux/generic/config-6.12
     
+    sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile
+    rm -rf package/network/utils/fullconenat-nft
+    rm -rf package/network/utils/fullconenat
+    rm -rf package/network/config/firewall/patches/fullconenat.patch
+    rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 

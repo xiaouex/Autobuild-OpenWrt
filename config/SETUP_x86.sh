@@ -131,29 +131,65 @@ function task_step_6() {
     sed -i 's/192\.168\.2\.1/10.0.0.1/g' package/base-files/files/bin/config_generate
    
 
+      
+          sed -i \
+      -e '/^CONFIG_SCHED_DEBUG=[ym]$/d' \
+      -e '/^# CONFIG_SCHED_DEBUG is not set$/d' \
+      -e '$a CONFIG_SCHED_DEBUG=y' \
+      -e '/^CONFIG_SCHEDSTATS=[ym]$/d' \
+      -e '/^# CONFIG_SCHEDSTATS is not set$/d' \
+      -e '$a CONFIG_SCHEDSTATS=y' \
+      -e '/^CONFIG_FAIR_GROUP_SCHED=[ym]$/d' \
+      -e '/^# CONFIG_FAIR_GROUP_SCHED is not set$/d' \
+      -e '$a CONFIG_FAIR_GROUP_SCHED=y' \
+      -e '/^CONFIG_CFS_BANDWIDTH=[ym]$/d' \
+      -e '/^# CONFIG_CFS_BANDWIDTH is not set$/d' \
+      -e '$a CONFIG_CFS_BANDWIDTH=y' \
+      -e '/^CONFIG_SCHED_AUTOGROUP=[ym]$/d' \
+      -e '/^# CONFIG_SCHED_AUTOGROUP is not set$/d' \
+      -e '$a CONFIG_SCHED_AUTOGROUP=y' \
+      target/linux/x86/64/config-6.12
+
+      
     sed -i \
-      -e 's/^# CONFIG_SCHED_DEBUG is not set$/CONFIG_SCHED_DEBUG=y/' \
-      -e 's/^# CONFIG_SCHED_AUTOGROUP is not set$/CONFIG_SCHED_AUTOGROUP=y/' \
-      -e 's/^# CONFIG_SCHEDSTATS is not set$/CONFIG_SCHEDSTATS=y/' \
-      -e 's/^# CONFIG_FAIR_GROUP_SCHED is not set$/CONFIG_FAIR_GROUP_SCHED=y/' \
-      -e 's/^# CONFIG_CFS_BANDWIDTH is not set$/CONFIG_CFS_BANDWIDTH=y/' \
-      -e 's/^# CONFIG_PREEMPT_DYNAMIC is not set$/CONFIG_PREEMPT_DYNAMIC=y/' \
-      -e 's/^# CONFIG_PREEMPT is not set$/CONFIG_PREEMPT=y/' \
-      -e 's/^# CONFIG_HZ_1000 is not set$/CONFIG_HZ_1000=y/' \
-      -e 's/^CONFIG_HZ=.*/CONFIG_HZ=1000/' \
-      target/linux/generic/config-6.12
-      
-      sed -i \
-      -e 's/^CONFIG_PREEMPT_NONE=y$/# CONFIG_PREEMPT_NONE is not set/' \
-      -e 's/^CONFIG_PREEMPT_VOLUNTARY=y$/# CONFIG_PREEMPT_VOLUNTARY is not set/' \
-      -e 's/^CONFIG_PREEMPT_RT=y$/# CONFIG_PREEMPT_RT is not set/' \
-      -e 's/^CONFIG_HZ_100=y$/# CONFIG_HZ_100 is not set/' \
-      -e 's/^CONFIG_HZ_250=y$/# CONFIG_HZ_250 is not set/' \
-      -e 's/^CONFIG_HZ_300=y$/# CONFIG_HZ_300 is not set/' \
-      -e 's/^CONFIG_HZ_500=y$/# CONFIG_HZ_500 is not set/' \
-      target/linux/generic/config-6.12
-      
-      echo "CONFIG_SCHED_BORE=y" >> target/linux/generic/config-6.12
+      -e '/^CONFIG_SCHED_BORE=[ym]$/d' \
+      -e '/^# CONFIG_SCHED_BORE is not set$/d' \
+      -e '$a CONFIG_SCHED_BORE=y' \
+      -e '/^CONFIG_MIN_BASE_SLICE_NS=[0-9]*$/d' \
+      -e '$a CONFIG_MIN_BASE_SLICE_NS=2000000' \
+      -e '/^CONFIG_HZ_100=[ym]$/d' \
+      -e '/^# CONFIG_HZ_100 is not set$/d' \
+      -e '$a # CONFIG_HZ_100 is not set' \
+      -e '/^CONFIG_HZ_250=[ym]$/d' \
+      -e '/^# CONFIG_HZ_250 is not set$/d' \
+      -e '$a # CONFIG_HZ_250 is not set' \
+      -e '/^CONFIG_HZ_300=[ym]$/d' \
+      -e '/^# CONFIG_HZ_300 is not set$/d' \
+      -e '$a # CONFIG_HZ_300 is not set' \
+      -e '/^CONFIG_HZ_500=[ym]$/d' \
+      -e '/^# CONFIG_HZ_500 is not set$/d' \
+      -e '$a # CONFIG_HZ_500 is not set' \
+      -e '/^CONFIG_HZ_1000=[ym]$/d' \
+      -e '/^# CONFIG_HZ_1000 is not set$/d' \
+      -e '$a CONFIG_HZ_1000=y' \
+      -e '/^CONFIG_HZ=[0-9]*$/d' \
+      -e '$a CONFIG_HZ=1000' \
+      -e '/^CONFIG_PREEMPT_NONE=[ym]$/d' \
+      -e '/^# CONFIG_PREEMPT_NONE is not set$/d' \
+      -e '$a # CONFIG_PREEMPT_NONE is not set' \
+      -e '/^CONFIG_PREEMPT_VOLUNTARY=[ym]$/d' \
+      -e '/^# CONFIG_PREEMPT_VOLUNTARY is not set$/d' \
+      -e '$a # CONFIG_PREEMPT_VOLUNTARY is not set' \
+      -e '/^CONFIG_PREEMPT_RT=[ym]$/d' \
+      -e '/^# CONFIG_PREEMPT_RT is not set$/d' \
+      -e '$a # CONFIG_PREEMPT_RT is not set' \
+      -e '/^CONFIG_PREEMPT=[ym]$/d' \
+      -e '/^# CONFIG_PREEMPT is not set$/d' \
+      -e '$a CONFIG_PREEMPT=y' \
+      -e '/^CONFIG_PREEMPT_DYNAMIC=[ym]$/d' \
+      -e '/^# CONFIG_PREEMPT_DYNAMIC is not set$/d' \
+      -e '$a CONFIG_PREEMPT_DYNAMIC=y' \
+      target/linux/x86/64/config-6.12
 
 
     sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile

@@ -119,16 +119,16 @@ function task_step_6() {
     echo "正在执行 [步骤 6]: 编译前最终配置调整..."
     sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
     cd $GITHUB_WORKSPACE
-    mv config/rax3000m/.config openwrt/.config
+    mv config/x86/.config openwrt/.config
     cd $GITHUB_WORKSPACE/openwrt
     curl -sSL https://raw.githubusercontent.com/mufeng05/openwrt-sonic-fullcone/master/add_sonic_fullcone.sh | bash
     #修改默认主题
-    sed -i 's/luci-theme-bootstrap/luci-theme-material3/g' feeds/luci/modules/luci-base/root/etc/config/luci
+    sed -i 's#^\([[:space:]]*option mediaurlbase[[:space:]]*\).*#\1/luci-static/material3#' feeds/luci/modules/luci-base/root/etc/config/luci
     #curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
     #修正连接数（by ベ七秒鱼ベ）
     sed -i '/will not survive a reimage/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
     
-    sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
+    sed -i 's/192\.168\.2\.1/10.0.0.1/g' package/base-files/files/bin/config_generate
    
 
     sed -i \

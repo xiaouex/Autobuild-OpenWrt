@@ -128,18 +128,35 @@ function task_step_6() {
     #修正连接数（by ベ七秒鱼ベ）
     sed -i '/will not survive a reimage/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
     
-    sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
+    sed -i 's#^\([[:space:]]*option mediaurlbase[[:space:]]*\).*#\1/luci-static/material3#' feeds/luci/modules/luci-base/root/etc/config/luci
     sed -i 's/ImmortalWrt/MineRouter/g' package/base-files/files/bin/config_generate
+    sed -i 's/192\.168\.1\.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
-    echo 'CONFIG_SCHED_BORE=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.12
-    echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.12
-    
-   
-    
+    sed -i \
+      -e 's/^CONFIG_PREEMPT_NONE=y$/# CONFIG_PREEMPT_NONE is not set/' \
+      -e 's/^CONFIG_PREEMPT_VOLUNTARY=y$/# CONFIG_PREEMPT_VOLUNTARY is not set/' \
+      -e 's/^CONFIG_PREEMPT_RT=y$/# CONFIG_PREEMPT_RT is not set/' \
+      -e 's/^CONFIG_HZ_100=y$/# CONFIG_HZ_100 is not set/' \
+      -e 's/^CONFIG_HZ_250=y$/# CONFIG_HZ_250 is not set/' \
+      -e 's/^CONFIG_HZ_300=y$/# CONFIG_HZ_300 is not set/' \
+      -e 's/^CONFIG_HZ_500=y$/# CONFIG_HZ_500 is not set/' \
+      target/linux/generic/config-6.12
+
+    sed -i \
+      -e 's/^# CONFIG_SCHED_DEBUG is not set$/CONFIG_SCHED_DEBUG=y/' \
+      -e 's/^# CONFIG_SCHED_BORE is not set$/CONFIG_SCHED_BORE=y/' \
+      -e 's/^# CONFIG_SCHED_AUTOGROUP is not set$/CONFIG_SCHED_AUTOGROUP=y/' \
+      -e 's/^# CONFIG_SCHEDSTATS is not set$/CONFIG_SCHEDSTATS=y/' \
+      -e 's/^# CONFIG_SCHED_MC is not set$/CONFIG_SCHED_MC=y/' \
+      -e 's/^# CONFIG_SCHED_CLUSTER is not set$/CONFIG_SCHED_CLUSTER=y/' \
+      -e 's/^# CONFIG_FAIR_GROUP_SCHED is not set$/CONFIG_FAIR_GROUP_SCHED=y/' \
+      -e 's/^# CONFIG_CFS_BANDWIDTH is not set$/CONFIG_CFS_BANDWIDTH=y/' \
+      -e 's/^# CONFIG_PREEMPT is not set$/CONFIG_PREEMPT=y/' \
+      -e 's/^# CONFIG_PREEMPT_DYNAMIC is not set$/CONFIG_PREEMPT_DYNAMIC=y/' \
+      -e 's/^# CONFIG_HZ_1000 is not set$/CONFIG_HZ_1000=y/' \
+      -e 's/^CONFIG_HZ=.*/CONFIG_HZ=1000/' \
+      target/linux/generic/config-6.12
+  
     sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile
     rm -rf package/network/utils/fullconenat-nft
     rm -rf package/network/utils/fullconenat

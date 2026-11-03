@@ -133,7 +133,6 @@ function task_step_6() {
 
     sed -i \
       -e 's/^# CONFIG_SCHED_DEBUG is not set$/CONFIG_SCHED_DEBUG=y/' \
-      -e 's/^# CONFIG_SCHED_BORE is not set$/CONFIG_SCHED_BORE=y/' \
       -e 's/^# CONFIG_SCHED_AUTOGROUP is not set$/CONFIG_SCHED_AUTOGROUP=y/' \
       -e 's/^# CONFIG_SCHEDSTATS is not set$/CONFIG_SCHEDSTATS=y/' \
       -e 's/^# CONFIG_FAIR_GROUP_SCHED is not set$/CONFIG_FAIR_GROUP_SCHED=y/' \
@@ -153,6 +152,8 @@ function task_step_6() {
       -e 's/^CONFIG_HZ_300=y$/# CONFIG_HZ_300 is not set/' \
       -e 's/^CONFIG_HZ_500=y$/# CONFIG_HZ_500 is not set/' \
       target/linux/generic/config-6.12
+      
+      echo "CONFIG_SCHED_BORE=y" >> target/linux/generic/config-6.12
 
 
     sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile

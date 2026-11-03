@@ -7,5 +7,6 @@ start() {
     tc qdisc replace dev pppoe-wan root fq_pie
     tc qdisc replace dev eth1 root fq_pie
     tc qdisc replace dev eth0 root fq_pie
+    net.ipv4.tcp_congestion_control=bbr
     sysctl -w kernel.sched_bore=1
 }

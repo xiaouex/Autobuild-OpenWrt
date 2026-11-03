@@ -15,8 +15,8 @@ set -euo pipefail
 # 您可以从 GitHub Actions 传入环境变量，或者在此处定义全局变量
 WORK_DIR="/workdir"
 REPO_DIR="$WORK_DIR/openwrt"
-readonly REPO_URL="https://github.com/chasey-dev/immortalwrt-mt798x-rebase"
-readonly REPO_BRANCH="25.12"
+readonly REPO_URL="https://github.com/immortalwrt/immortalwrt"
+readonly REPO_BRANCH="openwrt-25.12"
 # ==========================================
 # 分函数定义 (Sub-functions)
 # ==========================================
@@ -55,6 +55,7 @@ function task_step_3() {
     echo "正在执行 [步骤 3]: 添加额外软件包，并执行 feeds install和feeds install..."
     cd $GITHUB_WORKSPACE/openwrt
     git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
+    cp $GITHUB_WORKSPACE/files/my-script feeds/luci/applications/my-script
     #curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe   
 
     #rm -rf feeds/smpackage/luci-app-smartdns
@@ -137,18 +138,14 @@ function task_step_6() {
     echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/mediatek/filogic/config-6.12
     echo 'CONFIG_HZ_1000=y' >> target/linux/mediatek/filogic/config-6.12
     
-    sed -i \
-        -e 's/^# CONFIG_DEFAULT_FQ_PIE is not set/CONFIG_DEFAULT_FQ_PIE=y/' \
-        -e 's/^# CONFIG_DEFAULT_FQ is not set/CONFIG_DEFAULT_FQ=y/' \
-        -e 's/^CONFIG_DEFAULT_NET_SCH=.*/CONFIG_DEFAULT_NET_SCH="fq_pie"/' \
-        -e 's/^CONFIG_DEFAULT_TCP_CONG=.*/CONFIG_DEFAULT_TCP_CONG="bbr"/' \
-    target/linux/generic/config-6.12
+   
     
     sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile
     rm -rf package/network/utils/fullconenat-nft
     rm -rf package/network/utils/fullconenat
     rm -rf package/network/config/firewall/patches/fullconenat.patch
     rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
+    
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 

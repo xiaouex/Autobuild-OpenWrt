@@ -16,7 +16,7 @@ set -euo pipefail
 WORK_DIR="/workdir"
 REPO_DIR="$WORK_DIR/openwrt"
 readonly REPO_URL="https://github.com/immortalwrt/immortalwrt"
-readonly REPO_BRANCH="master"
+readonly REPO_BRANCH="openwrt-25.12"
 # ==========================================
 # 分函数定义 (Sub-functions)
 # ==========================================
@@ -42,7 +42,6 @@ function task_step_2() {
 
     echo "正在执行 [步骤 2]: 添加feeds源..."
     cd $GITHUB_WORKSPACE/openwrt
-
     sed -i '1i src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
     #sed -i '1i src-git jell https://github.com/kenzok8/jell' feeds.conf.default
     sed -i '2i src-git small https://github.com/kenzok8/small' feeds.conf.default
@@ -56,9 +55,12 @@ function task_step_3() {
     echo "正在执行 [步骤 3]: 添加额外软件包，并执行 feeds install和feeds install..."
     cd $GITHUB_WORKSPACE/openwrt
     git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
-    curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe   
-    
+    cp -rf $GITHUB_WORKSPACE/config/files/my-script feeds/luci/applications/my-script
+    #curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe   
 
+    #rm -rf feeds/smpackage/luci-app-smartdns
+    #git clone --depth 1 https://github.com/pymumu/luci-app-smartdns feeds/smpackage/luci-app-smartdns
+    #sed -i 's/DEPENDS:=+i386:libatomic +libopenssl/DEPENDS:=+i386:libatomic +libopenssl +zlib/g' feeds/smpackage/smartdns/Makefile
     #git clone --depth 1 https://github.com/DustReliant/luci-app-filetransfer package/xiaouex/luci-app-filetransfer
     #rm -rf feeds/smpackage/v2ray-geodata
     #git clone --depth 1 https://github.com/sbwml/v2ray-geodata feeds/smpackage/v2ray-geodata
@@ -70,7 +72,7 @@ function task_step_3() {
 
 # 分函数 4：添加mihomo smart内核
 function task_step_4() {
-      echo "正在执行 [步骤 4]: 添加mihomo smart内核..."
+    echo "正在执行 [步骤 4]: 添加mihomo smart内核..."
     cd $GITHUB_WORKSPACE
     
     cd $GITHUB_WORKSPACE
@@ -98,32 +100,67 @@ function task_step_5() {
     
     #Add BORE Scheduler
     git clone -b main https://github.com/firelzrd/bore-scheduler $GITHUB_WORKSPACE/config/files/BORE
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.18*.patch target/linux/generic/hack-6.18
-    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.18
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/stable/0001-linux6.12*.patch target/linux/generic/hack-6.12
+    cp $GITHUB_WORKSPACE/config/files/BORE/patches/additions/*.patch target/linux/generic/pending-6.12
     rm -rf $GITHUB_WORKSPACE/config/files/BORE
+    #Add BBRV3 
+    git config --global user.email "xiaouex@live.com"
+    git config --global user.name "xiaouex"
+    git remote add upstream https://github.com/rockdrilla/fork.openwrt
+    git fetch upstream
+    git cherry-pick -x a7ffdcae8e96eb6dece70622de121f97ff55bfab e2fa1c32f89ec0bfb726ceb96294b6b957b32d67 b0d225dbd9119fd094dbaa76160e9ce520126927
 
-    cp $GITHUB_WORKSPACE/config/files/601-tcp_bbr-v3-update-TCP-bbr-congestion-control-module-.patch target/linux/generic/pending-6.18    
+    
     echo "✔ [步骤 5] 合入自定义补丁 执行完毕。"
 }
 
 #分函数 6：编译前最终配置调整
 function task_step_6() {
-    cd $GITHUB_WORKSPACE
     echo "正在执行 [步骤 6]: 编译前最终配置调整..."
-    mv config/x86/.config openwrt/.config
-    cd $GITHUB_WORKSPACE/openwrt
     sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
+    cd $GITHUB_WORKSPACE
+    mv config/rax3000m/.config openwrt/.config
+    cd $GITHUB_WORKSPACE/openwrt
+    curl -sSL https://raw.githubusercontent.com/mufeng05/openwrt-sonic-fullcone/master/add_sonic_fullcone.sh | bash
     #修改默认主题
     sed -i 's/luci-theme-bootstrap/luci-theme-material3/g' feeds/luci/modules/luci-base/root/etc/config/luci
+    #curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
     #修正连接数（by ベ七秒鱼ベ）
     sed -i '/will not survive a reimage/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
+    
+    sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
+   
 
-    echo 'CONFIG_SCHED_BORE=y' >> target/linux/x86/config-6.18
-    echo 'CONFIG_MIN_BASE_SLICE_NS=2000000' >> target/linux/x86/config-6.18
-    echo 'CONFIG_SCHED_HRTICK=y' >> target/linux/x86/config-6.18
-    echo 'CONFIG_SCHED_AUTOGROUP=y' >> target/linux/x86/config-6.18
-    echo 'CONFIG_PREEMPT_VOLUNTARY=y' >> target/linux/x86/config-6.18
-    echo 'CONFIG_HZ_1000=y' >> target/linux/x86/config-6.18
+    sed -i \
+      -e 's/^# CONFIG_SCHED_DEBUG is not set$/CONFIG_SCHED_DEBUG=y/' \
+      -e 's/^# CONFIG_SCHED_BORE is not set$/CONFIG_SCHED_BORE=y/' \
+      -e 's/^# CONFIG_SCHED_AUTOGROUP is not set$/CONFIG_SCHED_AUTOGROUP=y/' \
+      -e 's/^# CONFIG_SCHEDSTATS is not set$/CONFIG_SCHEDSTATS=y/' \
+      -e 's/^# CONFIG_FAIR_GROUP_SCHED is not set$/CONFIG_FAIR_GROUP_SCHED=y/' \
+      -e 's/^# CONFIG_CFS_BANDWIDTH is not set$/CONFIG_CFS_BANDWIDTH=y/' \
+      -e 's/^# CONFIG_PREEMPT_DYNAMIC is not set$/CONFIG_PREEMPT_DYNAMIC=y/' \
+      -e 's/^# CONFIG_PREEMPT is not set$/CONFIG_PREEMPT=y/' \
+      -e 's/^# CONFIG_HZ_1000 is not set$/CONFIG_HZ_1000=y/' \
+      -e 's/^CONFIG_HZ=.*/CONFIG_HZ=1000/' \
+      target/linux/generic/config-6.12
+      
+      sed -i \
+      -e 's/^CONFIG_PREEMPT_NONE=y$/# CONFIG_PREEMPT_NONE is not set/' \
+      -e 's/^CONFIG_PREEMPT_VOLUNTARY=y$/# CONFIG_PREEMPT_VOLUNTARY is not set/' \
+      -e 's/^CONFIG_PREEMPT_RT=y$/# CONFIG_PREEMPT_RT is not set/' \
+      -e 's/^CONFIG_HZ_100=y$/# CONFIG_HZ_100 is not set/' \
+      -e 's/^CONFIG_HZ_250=y$/# CONFIG_HZ_250 is not set/' \
+      -e 's/^CONFIG_HZ_300=y$/# CONFIG_HZ_300 is not set/' \
+      -e 's/^CONFIG_HZ_500=y$/# CONFIG_HZ_500 is not set/' \
+      target/linux/generic/config-6.12
+
+
+    sed -i 's/ +kmod-nft-fullcone//' package/network/config/firewall4/Makefile
+    rm -rf package/network/utils/fullconenat-nft
+    rm -rf package/network/utils/fullconenat
+    rm -rf package/network/config/firewall/patches/fullconenat.patch
+    rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
+    
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 
@@ -160,7 +197,7 @@ function main() {
     task_step_3
     echo "::endgroup::"
 
-    echo "::group::[4/7] Step 4: 添加mihomo smart内核"
+    echo "::group::[4/7] Step 4: 添加mihomo内核"
     task_step_4
     echo "::endgroup::"
 

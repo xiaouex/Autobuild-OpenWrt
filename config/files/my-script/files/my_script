@@ -9,4 +9,21 @@ start() {
     tc qdisc replace dev eth0 root fq_pie
     net.ipv4.tcp_congestion_control=bbr
     sysctl -w kernel.sched_bore=1
+
+
+    # 子任务 burst 时间继承方式：2 = 按祖先拓扑继承，最抗 make -j 之类的 fork 风暴
+    sysctl -w kernel.sched_burst_inherit_type = 2
+
+    # burst 时间衰减缓存（纳秒），默认 75000000，网关/桌面通用
+    sysctl -w kernel.sched_burst_cache_lifetime = 75000000
+
+    # burst 评分偏移：越大 → 短 burst 任务越"占便宜"，交互更顺滑
+    sysctl -w kernel.sched_burst_penalty_offset = 24
+
+    # burst 惩罚强度：越大 → 长占用 CPU 的任务越快被降权
+    sysctl -w kernel.sched_burst_penalty_scale = 1536
+
+    # burst 评分平滑度：0 最平滑（历史权重高），3 几乎不平滑（响应最快但易抖动）
+    sysctl -w kernel.sched_burst_smoothness = 1
+
 }

@@ -55,7 +55,7 @@ function task_step_3() {
     echo "正在执行 [步骤 3]: 添加额外软件包，并执行 feeds install和feeds install..."
     cd $GITHUB_WORKSPACE/openwrt
     git clone --depth 1 https://github.com/gSpotx2f/luci-app-temp-status feeds/luci/applications/luci-app-temp-status
-    cp $GITHUB_WORKSPACE/config/files/my-script feeds/luci/applications/my-script
+    cp -rf $GITHUB_WORKSPACE/config/files/my-script feeds/luci/applications/my-script
     #curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh --no-sfe   
 
     #rm -rf feeds/smpackage/luci-app-smartdns

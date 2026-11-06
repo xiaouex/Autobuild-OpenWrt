@@ -81,10 +81,10 @@ function task_step_4() {
     core_path="$GITHUB_WORKSPACE/openwrt/feeds/smpackage/luci-app-openclash/root/etc/openclash/core"
     geo_path="$GITHUB_WORKSPACE/openwrt/feeds/smpackage/luci-app-openclash/root/etc/openclash"
 
-    curl -L -o $GITHUB_WORKSPACE/clash-linux-amd64-v2.tar.gz \
-    https://github.com/vernesong/OpenClash/raw/core/dev/smart/clash-linux-amd64-v2.tar.gz
+    curl -L -o $GITHUB_WORKSPACE/clash-linux-amd64-v1.tar.gz \
+    https://github.com/vernesong/OpenClash/raw/core/dev/smart/clash-linux-amd64-v1.tar.gz
 
-    tar -zxvf clash-linux-amd64-v2.tar.gz -O > "$core_path/clash_meta"
+    tar -zxvf clash-linux-amd64-v1.tar.gz -O > "$core_path/clash_meta"
 
     wget -qO- https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat > $geo_path/GeoIP.dat
     wget -qO- https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat > $geo_path/GeoSite.dat
@@ -128,8 +128,7 @@ function task_step_6() {
     #修正连接数（by ベ七秒鱼ベ）
     sed -i '/will not survive a reimage/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
     
-    sed -i 's/192\.168\.2\.1/10.0.0.1/g' package/base-files/files/bin/config_generate
-   
+    sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate   
 
       
           sed -i \

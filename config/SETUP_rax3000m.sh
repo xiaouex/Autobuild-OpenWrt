@@ -15,8 +15,8 @@ set -euo pipefail
 # 您可以从 GitHub Actions 传入环境变量，或者在此处定义全局变量
 WORK_DIR="/workdir"
 REPO_DIR="$WORK_DIR/openwrt"
-readonly REPO_URL="https://github.com/immortalwrt/immortalwrt"
-readonly REPO_BRANCH="openwrt-25.12"
+readonly REPO_URL="https://github.com/chasey-dev/immortalwrt-mt798x-rebase"
+readonly REPO_BRANCH="25.12"
 # ==========================================
 # 分函数定义 (Sub-functions)
 # ==========================================

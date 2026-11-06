@@ -231,6 +231,9 @@ function task_step_6() {
     rm -rf package/network/utils/fullconenat
     rm -rf package/network/config/firewall/patches/fullconenat.patch
     rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
+    rm -rf package/​network/​config/​firewall/​patches/​fullconenat.patch
+    rm -rf package/​libs/​libnftnl/​patches/​001-libnftnl-add-fullcone-expression-support.patch
+    rm -rf package/​network/​utils/​nftables/​patches/​002-nftables-add-fullcone-expression-support.patch
     
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }

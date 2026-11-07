@@ -232,6 +232,9 @@ function task_step_6() {
     rm -rf package/network/config/firewall/patches/fullconenat.patch
     rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
     
+    sed -i '/label = "factory";/,/};/ s/[[:space:]]*read-only;//' \
+    target/linux/mediatek/dts/mt7981b-cmcc-rax3000m-nand.dtso
+
     echo "✔ [步骤 6] 编译前最终配置调整 执行完毕。"
 }
 

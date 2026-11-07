@@ -15,8 +15,8 @@ set -euo pipefail
 # 您可以从 GitHub Actions 传入环境变量，或者在此处定义全局变量
 WORK_DIR="/workdir"
 REPO_DIR="$WORK_DIR/openwrt"
-readonly REPO_URL="https://github.com/immortalwrt/immortalwrt"
-readonly REPO_BRANCH="openwrt-25.12"
+readonly REPO_URL="https://github.com/chasey-dev/immortalwrt-mt798x-rebase"
+readonly REPO_BRANCH="25.12"
 # ==========================================
 # 分函数定义 (Sub-functions)
 # ==========================================
@@ -130,7 +130,7 @@ function task_step_6() {
     
     sed -i 's#^\([[:space:]]*option mediaurlbase[[:space:]]*\).*#\1/luci-static/material3#' feeds/luci/modules/luci-base/root/etc/config/luci
     sed -i 's/ImmortalWrt/MineRouter/g' package/base-files/files/bin/config_generate
-    sed -i 's/192\.168\.1\.1/10.0.0.1/g' package/base-files/files/bin/config_generate
+    sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
     sed -i \
       -e '/^CONFIG_SCHED_BORE=[ym]$/d' \
@@ -231,6 +231,9 @@ function task_step_6() {
     rm -rf package/network/utils/fullconenat
     rm -rf package/network/config/firewall/patches/fullconenat.patch
     rm -rf package/network/config/firewall4/patches/001-firewall4-add-support-for-fullcone-nat.patch
+    rm -rf package/​network/​config/​firewall/​patches/​fullconenat.patch
+    rm -rf package/​libs/​libnftnl/​patches/​001-libnftnl-add-fullcone-expression-support.patch
+    rm -rf package/​network/​utils/​nftables/​patches/​002-nftables-add-fullcone-expression-support.patch
     
     sed -i '/label = "factory";/,/};/ s/[[:space:]]*read-only;//' \
     target/linux/mediatek/dts/mt7981b-cmcc-rax3000m-nand.dtso
